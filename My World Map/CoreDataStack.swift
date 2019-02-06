@@ -78,9 +78,9 @@ class CoreDataStack: NSObject {
         return pin
     }
     
-    func fetchAllPins(_ predicate: NSPredicate? = nil, entityName: String, sortDescriptor: NSSortDescriptor? = nil) throws -> [Pin]? {
+    func fetchAllPins(isVisited: Bool, entityName: String, sortDescriptor: NSSortDescriptor? = nil) throws -> [Pin]? {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-        fetchRequest.predicate = predicate
+        fetchRequest.predicate = NSPredicate(format: "isVisited = %@ ", NSNumber(value: isVisited))
         if let sortDescriptor = sortDescriptor {
             fetchRequest.sortDescriptors = [sortDescriptor]
         }

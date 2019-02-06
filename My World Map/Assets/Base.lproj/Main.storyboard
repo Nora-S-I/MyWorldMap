@@ -13,7 +13,7 @@
         <!--To Visit Map-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="World Map" id="BYZ-38-t0r" userLabel="To Visit Map" customClass="MapViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="World Map" id="BYZ-38-t0r" userLabel="To Visit Map" customClass="ToVisitViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -36,9 +36,14 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="To Visit " id="pia-5A-c1a">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="0we-fh-bx8"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="0we-fh-bx8">
+                            <connections>
+                                <action selector="edit:" destination="BYZ-38-t0r" id="CoH-r7-W71"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="0we-fh-bx8" id="BmR-KS-sDB"/>
                         <outlet property="touristMapView" destination="hOJ-bW-uMC" id="JIA-EP-Wh3"/>
                         <segue destination="MF4-l9-dVD" kind="show" identifier="viewToVisit" id="yZH-69-wuu"/>
                     </connections>
@@ -52,10 +57,10 @@
             </objects>
             <point key="canvasLocation" x="2789.5999999999999" y="-863.1184407796103"/>
         </scene>
-        <!--Photos View Controller-->
+        <!--To Visit Photos View Controller-->
         <scene sceneID="bS7-MK-TqS">
             <objects>
-                <viewController id="MF4-l9-dVD" customClass="PhotosViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="MF4-l9-dVD" customClass="ToVisitPhotosViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FOP-ig-rKJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -146,10 +151,10 @@
             </objects>
             <point key="canvasLocation" x="3676" y="-863"/>
         </scene>
-        <!--View Controller-->
+        <!--Photos Viewer View Controller-->
         <scene sceneID="cEZ-yg-eqL">
             <objects>
-                <viewController id="mpk-x1-3Go" sceneMemberID="viewController">
+                <viewController id="mpk-x1-3Go" customClass="PhotosViewerViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zmy-Yg-fAR">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -189,7 +194,6 @@
         <!-- Tab Bar Controller-->
         <scene sceneID="JVc-b8-x74">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ejC-Gq-M8C" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="6CU-tv-Eyw" userLabel=" Tab Bar Controller" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="eKG-R2-UOx">
@@ -205,6 +209,7 @@
                         <segue destination="sy8-0h-Pnq" kind="relationship" relationship="viewControllers" id="UOL-00-RGQ"/>
                     </connections>
                 </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ejC-Gq-M8C" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="960.79999999999995" y="-564.46776611694156"/>
         </scene>
@@ -230,7 +235,7 @@
         <!--Visited Map-->
         <scene sceneID="ZHr-Og-Fb2">
             <objects>
-                <viewController title="World Map" id="9MN-si-Jnm" userLabel="Visited Map" customClass="MapViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="World Map" id="9MN-si-Jnm" userLabel="Visited Map" customClass="VisitedViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Nqq-Jt-MYt">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -269,10 +274,10 @@
             </objects>
             <point key="canvasLocation" x="2789.5999999999999" y="-209.14542728635683"/>
         </scene>
-        <!--Photos View Controller-->
+        <!--Visited Photos View Controller-->
         <scene sceneID="pBF-it-bQo">
             <objects>
-                <viewController id="3zb-i5-C4Z" customClass="PhotosViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="3zb-i5-C4Z" customClass="VisitedPhotosViewController" customModule="My_World_Map" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rSD-Mk-0GS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -369,6 +374,6 @@
         <image name="visited" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="aqh-ki-TwV"/>
+        <segue reference="JoK-Tp-7Yi"/>
     </inferredMetricsTieBreakers>
 </document>

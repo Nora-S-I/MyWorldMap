@@ -1,5 +1,5 @@
 //
-//  PhotosViewController.swift
+//  ToVisitPhotosViewController.swift
 //  Virtual Tourist
 //
 //  Created by Norah Al Ibrahim on 1/26/19.
@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotosViewController: UIViewController, MKMapViewDelegate {
+class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var pinLocationMapView: MKMapView!
     @IBOutlet weak var newCollectionButton: UIButton!
@@ -105,7 +105,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
 }
 
 //delegation extension
-extension PhotosViewController: NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension ToVisitPhotosViewController: NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         

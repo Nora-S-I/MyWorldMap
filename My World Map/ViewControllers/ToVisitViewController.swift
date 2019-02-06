@@ -1,5 +1,5 @@
 //
-//  MapViewController.swift
+//  ToVisitViewController.swift
 //  Virtual Tourist
 //
 //  Created by Norah Al Ibrahim on 1/26/19.
@@ -9,23 +9,27 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class ToVisitViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var touristMapView: MKMapView!
+    @IBOutlet weak var editButton: UIBarButtonItem!
     
     var pinAnnotation: MKPointAnnotation? = nil
     let coreDataStack = CoreDataStack()
+    
+    var editingState: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //set delegate
         touristMapView.delegate = self
+        editingState = false
         
         //display previous pins
         var previousPins: [Pin]?
         do {
-            try  previousPins = coreDataStack.fetchAllPins(entityName: Pin.name)
+            try  previousPins = coreDataStack.fetchAllPins(isVisited: false, entityName: Pin.name)
         } catch {
             showInfo(withTitle: "Error", withMessage: "Error while fetching Pin locations: \(error)")
         }
@@ -41,6 +45,19 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    
+    
+    @IBAction func edit(_ sender: Any) {
+        //change editing state
+        editingState = !editingState
+        if editingState {
+            editButton.title = "Done"
+            
+        }else {
+            editButton.title = "Edit"
+        }
+        
+    }
     @IBAction func addPinLongPressGesture(_ sender: UILongPressGestureRecognizer) {
         let location = sender.location(in: touristMapView)
         let locationCoordinate = touristMapView.convert(location, toCoordinateFrom: touristMapView)
@@ -55,7 +72,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             pinAnnotation!.coordinate = locationCoordinate
             break
         case .ended:
-            _ = Pin(latitude: String(pinAnnotation!.coordinate.latitude), longitude: String(pinAnnotation!.coordinate.longitude), isVisited: true,
+            _ = Pin(latitude: String(pinAnnotation!.coordinate.latitude), longitude: String(pinAnnotation!.coordinate.longitude), isVisited: false,
                 context: coreDataStack.managedObjectContext)
             coreDataStack.saveContext()
             break
@@ -65,11 +82,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.destination is PhotosViewController {
+        if segue.destination is ToVisitPhotosViewController {
             guard let pin = sender as? Pin else {
                 return
             }
-            let controller = segue.destination as! PhotosViewController
+            let controller = segue.destination as! ToVisitPhotosViewController
             controller.pin = pin
             controller.coreDataStack = coreDataStack
         }
@@ -77,7 +94,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 }
 
 // Map View delegattion
-extension MapViewController {
+extension ToVisitViewController {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -108,6 +125,13 @@ extension MapViewController {
         guard let annotation = view.annotation else {
             return
         }
+        //delete pin
+        if editingState {
+            
+        
+        }
+            //performe segue
+        else {
         mapView.deselectAnnotation(annotation, animated: true)
         let latitude = String(annotation.coordinate.latitude)
         let longitude = String(annotation.coordinate.longitude)
@@ -122,3 +146,4 @@ extension MapViewController {
     }
 }
 
+}

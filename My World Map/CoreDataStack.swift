@@ -90,6 +90,36 @@ class CoreDataStack: NSObject {
         return pin
     }
     
+    func deletePin(latitude: String, longitude: String) throws {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+        fetchRequest.includesPropertyValues = false 
+        fetchRequest.predicate = NSPredicate (format: "latitude == %@ AND longitude == %@", latitude, longitude)
+        guard let fetchResults = try managedObjectContext.fetch(fetchRequest) as? [Pin] else {
+            fatalError("Pin is not found")
+        }
+        for result in fetchResults {
+            
+            //delete photos assosiated with the pin before deleting the pin
+            let photosFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Photo")
+            photosFetchRequest.includesPropertyValues = false
+            photosFetchRequest.predicate = NSPredicate (format: "pin = %@", result)
+            guard let photoFetchResults = try managedObjectContext.fetch(photosFetchRequest) as? [Photo] else {
+                fatalError("Pin is not found")
+            }
+            
+            for photo in photoFetchResults {
+                managedObjectContext.delete(photo)
+            }
+            
+            managedObjectContext.delete(result)
+        }
+        
+        saveContext()
+        
+    }
+    
+    
     func fetchPhotos(_ predicate: NSPredicate? = nil, entityName: String, sortDescriptor: NSSortDescriptor? = nil) throws -> [Photo]? {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         fetchRequest.predicate = predicate

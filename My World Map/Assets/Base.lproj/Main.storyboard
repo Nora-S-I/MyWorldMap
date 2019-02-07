@@ -258,17 +258,22 @@
                         <viewLayoutGuide key="safeArea" id="WEL-6V-fah"/>
                     </view>
                     <navigationItem key="navigationItem" title="Visited" id="dWM-20-8y8">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="pzs-Jt-j2Y"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="pzs-Jt-j2Y">
+                            <connections>
+                                <action selector="edit:" destination="9MN-si-Jnm" id="Vgq-mL-FBI"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="touristMapView" destination="9ve-jx-PuE" id="FDv-T4-WU8"/>
+                        <outlet property="editButton" destination="pzs-Jt-j2Y" id="pPW-gj-HTI"/>
+                        <outlet property="mapView" destination="9ve-jx-PuE" id="PPe-DB-uy4"/>
                         <segue destination="3zb-i5-C4Z" kind="show" identifier="viewVisited" id="QX4-eW-1bU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HLk-ci-JD1" sceneMemberID="firstResponder"/>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.5" id="CUg-tC-LBZ">
                     <connections>
-                        <action selector="addPinLongPressGesture:" destination="9MN-si-Jnm" id="o6W-2e-tKN"/>
+                        <action selector="addPinLongPressGesture:" destination="9MN-si-Jnm" id="Gw4-bt-Olh"/>
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>

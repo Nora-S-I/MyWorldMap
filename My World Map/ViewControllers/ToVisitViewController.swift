@@ -16,13 +16,11 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
     
     var pinAnnotation: MKPointAnnotation? = nil
     let coreDataStack = CoreDataStack()
-    
     var editingState: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //set delegate
         touristMapView.delegate = self
         editingState = false
         
@@ -45,20 +43,19 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    
-    
     @IBAction func edit(_ sender: Any) {
         //change editing state
         editingState = !editingState
-        if editingState {
-            editButton.title = "Done"
-            
-        }else {
-            editButton.title = "Edit"
-        }
         
+        if editingState {
+            configureEditButton(editState: editingState, buttonTitle: "Done")
+        }else {
+           configureEditButton(editState: editingState, buttonTitle: "Edit")
+        }
+
     }
     @IBAction func addPinLongPressGesture(_ sender: UILongPressGestureRecognizer) {
+        if !editingState{
         let location = sender.location(in: touristMapView)
         let locationCoordinate = touristMapView.convert(location, toCoordinateFrom: touristMapView)
         
@@ -79,6 +76,7 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
         case .possible, .cancelled, .failed:
             break
         }
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -90,6 +88,13 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
             controller.pin = pin
             controller.coreDataStack = coreDataStack
         }
+    }
+    
+    func configureEditButton (editState: Bool, buttonTitle: String){
+        let tabBarControllerItems = self.tabBarController?.tabBar.items
+        editButton.title = buttonTitle
+        tabBarControllerItems?[0].isEnabled = !editState
+        tabBarControllerItems?[1].isEnabled = !editState
     }
 }
 
@@ -128,7 +133,12 @@ extension ToVisitViewController {
         //delete pin
         if editingState {
             
-        
+            do{
+                try coreDataStack.deletePin(latitude:String(annotation.coordinate.latitude) , longitude: String(annotation.coordinate.longitude))
+                mapView.removeAnnotation(annotation)
+            }catch{
+                 showInfo(withTitle: "Error", withMessage: "Couldn't delete the pin")
+            }
         }
             //performe segue
         else {

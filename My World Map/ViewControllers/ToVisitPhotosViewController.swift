@@ -13,7 +13,6 @@ import CoreData
 class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var pinLocationMapView: MKMapView!
-    @IBOutlet weak var newCollectionButton: UIButton!
     @IBOutlet weak var photoColloectionView: UICollectionView!
     
     var selectedIndexes = [IndexPath]()
@@ -25,9 +24,12 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
     var pin: Pin?
     var fetchedResultsController: NSFetchedResultsController<Photo>!
     var coreDataStack = CoreDataStack()
+    var editState: Bool!
+    var selectedIndex: IndexPath!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         //set mapview settings
         pinLocationMapView.delegate = self
         pinLocationMapView.isZoomEnabled = false
@@ -64,6 +66,19 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = true
+        editState = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.tabBarController?.tabBar.isHidden = false
+    }
+
     @IBAction func newCollectionButton(_ sender: Any) {
         //delete saved photos
         for photos in fetchedResultsController.fetchedObjects! {
@@ -102,6 +117,17 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.destination is PhotosViewerViewController {
+            
+            let controller = segue.destination as! PhotosViewerViewController
+            controller.photoArray = fetchedResultsController.fetchedObjects!
+            controller.selectedIndex = selectedIndex.row
+             
+        }
+    }
+    
 }
 
 //delegation extension
@@ -189,10 +215,17 @@ extension ToVisitPhotosViewController: NSFetchedResultsControllerDelegate, UICol
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if editState {
         //delete the selected photo
         let photoToDelete = fetchedResultsController.object(at: indexPath)
         coreDataStack.managedObjectContext.delete(photoToDelete)
         coreDataStack.saveContext()
+        }else{
+            selectedIndex = indexPath
+            performSegue(withIdentifier:"showDetails", sender: nil)
+        }
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying: UICollectionViewCell, forItemAt: IndexPath) {

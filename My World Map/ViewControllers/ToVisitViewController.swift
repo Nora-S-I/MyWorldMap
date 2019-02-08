@@ -58,7 +58,6 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
         if !editingState{
         let location = sender.location(in: touristMapView)
         let locationCoordinate = touristMapView.convert(location, toCoordinateFrom: touristMapView)
-        
         switch sender.state {
         case .began:
             pinAnnotation = MKPointAnnotation()

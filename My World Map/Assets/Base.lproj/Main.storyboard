@@ -141,7 +141,6 @@
                         <viewLayoutGuide key="safeArea" id="Lke-im-ZrQ"/>
                     </view>
                     <connections>
-                        <outlet property="newCollectionButton" destination="hry-iv-4xh" id="OQL-wp-PDK"/>
                         <outlet property="photoColloectionView" destination="cXm-mh-VKv" id="Sbf-BM-nHa"/>
                         <outlet property="pinLocationMapView" destination="a9X-xL-YfT" id="ce2-6x-sxX"/>
                         <segue destination="mpk-x1-3Go" kind="show" identifier="showDetails" id="aqh-ki-TwV"/>
@@ -159,14 +158,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="k2Q-an-N5g">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oMf-M5-GTN">
                                 <rect key="frame" x="0.0" y="64" width="375" height="554"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="oMf-M5-GTN" firstAttribute="leading" secondItem="Fz8-RA-SVo" secondAttribute="leading" id="6HY-NA-q0V"/>
+                            <constraint firstItem="oMf-M5-GTN" firstAttribute="trailing" secondItem="Fz8-RA-SVo" secondAttribute="trailing" id="W3S-Z5-PaS"/>
+                            <constraint firstItem="oMf-M5-GTN" firstAttribute="top" secondItem="Fz8-RA-SVo" secondAttribute="top" id="eF4-oo-B0e"/>
+                            <constraint firstItem="oMf-M5-GTN" firstAttribute="bottom" secondItem="Fz8-RA-SVo" secondAttribute="bottom" id="f2T-3j-ile"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="Fz8-RA-SVo"/>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="oMf-M5-GTN" id="ojb-Bv-FJW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Ks-fS-06n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -297,7 +305,7 @@
                                 <rect key="frame" x="0.0" y="588" width="375" height="30"/>
                                 <state key="normal" title="Add Photo"/>
                                 <connections>
-                                    <action selector="newCollectionButton:" destination="3zb-i5-C4Z" eventType="touchUpInside" id="LQQ-Xy-x70"/>
+                                    <action selector="addPhoto:" destination="3zb-i5-C4Z" eventType="touchUpInside" id="MrQ-0k-nnF"/>
                                 </connections>
                             </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ptV-Lr-chc">
@@ -342,8 +350,8 @@
                                     </collectionViewCell>
                                 </cells>
                                 <connections>
-                                    <outlet property="dataSource" destination="3zb-i5-C4Z" id="aGD-Dc-Bcw"/>
-                                    <outlet property="delegate" destination="3zb-i5-C4Z" id="6Hh-Re-iVM"/>
+                                    <outlet property="dataSource" destination="3zb-i5-C4Z" id="F6e-QH-kJ8"/>
+                                    <outlet property="delegate" destination="3zb-i5-C4Z" id="Kpb-IY-bfx"/>
                                 </connections>
                             </collectionView>
                         </subviews>
@@ -363,10 +371,9 @@
                         <viewLayoutGuide key="safeArea" id="wao-gR-UEc"/>
                     </view>
                     <connections>
-                        <outlet property="newCollectionButton" destination="HNA-US-ixJ" id="9ag-sx-VhA"/>
-                        <outlet property="photoColloectionView" destination="ptV-Lr-chc" id="0he-EL-JRX"/>
-                        <outlet property="pinLocationMapView" destination="fXa-DX-3uQ" id="tlT-w0-aMG"/>
-                        <segue destination="mpk-x1-3Go" kind="show" id="JoK-Tp-7Yi"/>
+                        <outlet property="visitedCollectionView" destination="ptV-Lr-chc" id="WaY-F7-juQ"/>
+                        <outlet property="visitedLocationMap" destination="fXa-DX-3uQ" id="ilZ-9d-zan"/>
+                        <segue destination="mpk-x1-3Go" kind="show" identifier="showDetails" id="JoK-Tp-7Yi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WlP-NC-0uI" userLabel="First Responder" sceneMemberID="firstResponder"/>

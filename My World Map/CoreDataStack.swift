@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 class CoreDataStack: NSObject {
     let moduleName = "MyWorldMap"
@@ -130,6 +131,16 @@ class CoreDataStack: NSObject {
             return nil
         }
         return photos
+    }
+    
+    func addPhoto (pin: Pin, image:UIImage) throws
+    {
+        if let imageData = image.pngData() {
+            let photo = Photo(title: "", imageUrl: "", forPin: pin, context: managedObjectContext)
+            photo.image = NSData(data:imageData)
+            saveContext()
+        }
+
     }
     
     func addStoreCoordinator(_ storeType: String, configuration: String?, storeURL: URL, options : [NSObject:AnyObject]?) throws {

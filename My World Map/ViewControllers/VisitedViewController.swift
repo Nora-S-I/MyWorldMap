@@ -59,7 +59,7 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
         if !editingState{
             let location = sender.location(in: mapView)
             let locationCoordinate = mapView.convert(location, toCoordinateFrom: mapView)
-            
+           
             switch sender.state {
             case .began:
                 pinAnnotation = MKPointAnnotation()
@@ -77,6 +77,7 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
             case .possible, .cancelled, .failed:
                 break
             }
+            
         }
     }
     

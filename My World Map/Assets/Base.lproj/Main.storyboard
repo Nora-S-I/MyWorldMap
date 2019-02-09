@@ -141,6 +141,7 @@
                         <viewLayoutGuide key="safeArea" id="Lke-im-ZrQ"/>
                     </view>
                     <connections>
+                        <outlet property="newCollection" destination="hry-iv-4xh" id="sJv-Ks-IQ8"/>
                         <outlet property="photoColloectionView" destination="cXm-mh-VKv" id="Sbf-BM-nHa"/>
                         <outlet property="pinLocationMapView" destination="a9X-xL-YfT" id="ce2-6x-sxX"/>
                         <segue destination="mpk-x1-3Go" kind="show" identifier="showDetails" id="aqh-ki-TwV"/>
@@ -371,6 +372,7 @@
                         <viewLayoutGuide key="safeArea" id="wao-gR-UEc"/>
                     </view>
                     <connections>
+                        <outlet property="addPhoto" destination="HNA-US-ixJ" id="uQc-SI-aso"/>
                         <outlet property="visitedCollectionView" destination="ptV-Lr-chc" id="WaY-F7-juQ"/>
                         <outlet property="visitedLocationMap" destination="fXa-DX-3uQ" id="ilZ-9d-zan"/>
                         <segue destination="mpk-x1-3Go" kind="show" identifier="showDetails" id="JoK-Tp-7Yi"/>

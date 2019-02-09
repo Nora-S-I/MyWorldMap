@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class ToVisitViewController: UIViewController, MKMapViewDelegate {
+class ToVisitViewController: UIViewController {
     
     @IBOutlet weak var touristMapView: MKMapView!
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -24,7 +24,7 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
         touristMapView.delegate = self
         editingState = false
         
-        //display previous pins
+        //display previously saved pins on the map
         var previousPins: [Pin]?
         do {
             try  previousPins = coreDataStack.fetchAllPins(isVisited: false, entityName: Pin.name)
@@ -46,35 +46,38 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
     @IBAction func edit(_ sender: Any) {
         //change editing state
         editingState = !editingState
-        
+        //when start editing, change to edit mode
         if editingState {
             configureEditButton(editState: editingState, buttonTitle: "Done")
-        }else {
-           configureEditButton(editState: editingState, buttonTitle: "Edit")
         }
-
+            //when finish editing, get back orginal mode
+        else {
+            configureEditButton(editState: editingState, buttonTitle: "Edit")
+        }
+        
     }
     @IBAction func addPinLongPressGesture(_ sender: UILongPressGestureRecognizer) {
+        //allow user to add pin only if the user not on edit mode
         if !editingState{
-        let location = sender.location(in: touristMapView)
-        let locationCoordinate = touristMapView.convert(location, toCoordinateFrom: touristMapView)
-        switch sender.state {
-        case .began:
-            pinAnnotation = MKPointAnnotation()
-            pinAnnotation!.coordinate = locationCoordinate
-            touristMapView.addAnnotation(pinAnnotation!)
-            break
-        case .changed:
-            pinAnnotation!.coordinate = locationCoordinate
-            break
-        case .ended:
-            _ = Pin(latitude: String(pinAnnotation!.coordinate.latitude), longitude: String(pinAnnotation!.coordinate.longitude), isVisited: false,
-                context: coreDataStack.managedObjectContext)
-            coreDataStack.saveContext()
-            break
-        case .possible, .cancelled, .failed:
-            break
-        }
+            let location = sender.location(in: touristMapView)
+            let locationCoordinate = touristMapView.convert(location, toCoordinateFrom: touristMapView)
+            switch sender.state {
+            case .began:
+                pinAnnotation = MKPointAnnotation()
+                pinAnnotation!.coordinate = locationCoordinate
+                touristMapView.addAnnotation(pinAnnotation!)
+                break
+            case .changed:
+                pinAnnotation!.coordinate = locationCoordinate
+                break
+            case .ended:
+                _ = Pin(latitude: String(pinAnnotation!.coordinate.latitude), longitude: String(pinAnnotation!.coordinate.longitude), isVisited: false,
+                        context: coreDataStack.managedObjectContext)
+                coreDataStack.saveContext()
+                break
+            case .possible, .cancelled, .failed:
+                break
+            }
         }
     }
     
@@ -89,6 +92,7 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    //function to configure the view controller interface when the user start and done editing
     func configureEditButton (editState: Bool, buttonTitle: String){
         let tabBarControllerItems = self.tabBarController?.tabBar.items
         editButton.title = buttonTitle
@@ -98,7 +102,7 @@ class ToVisitViewController: UIViewController, MKMapViewDelegate {
 }
 
 // Map View delegattion
-extension ToVisitViewController {
+extension ToVisitViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -129,30 +133,30 @@ extension ToVisitViewController {
         guard let annotation = view.annotation else {
             return
         }
-        //delete pin
+        //if user on edit mode, delete pin
         if editingState {
             
             do{
                 try coreDataStack.deletePin(latitude:String(annotation.coordinate.latitude) , longitude: String(annotation.coordinate.longitude))
                 mapView.removeAnnotation(annotation)
             }catch{
-                 showInfo(withTitle: "Error", withMessage: "Couldn't delete the pin")
+                showInfo(withTitle: "Error", withMessage: "Couldn't delete the pin")
             }
         }
-            //performe segue
+            //if user is not editing, performe segue
         else {
-        mapView.deselectAnnotation(annotation, animated: true)
-        let latitude = String(annotation.coordinate.latitude)
-        let longitude = String(annotation.coordinate.longitude)
-        let predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
-        var pin: Pin?
-        do {
-            try pin = coreDataStack.fetchPin(predicate, entityName: Pin.name)
-            performSegue(withIdentifier: "viewToVisit", sender: pin)
-        } catch {
-            showInfo(withTitle: "Error", withMessage: "Error while fetching location: \(error)")
+            mapView.deselectAnnotation(annotation, animated: true)
+            let latitude = String(annotation.coordinate.latitude)
+            let longitude = String(annotation.coordinate.longitude)
+            let predicate = NSPredicate(format: "latitude == %@ AND longitude == %@", latitude, longitude)
+            var pin: Pin?
+            do {
+                try pin = coreDataStack.fetchPin(predicate, entityName: Pin.name)
+                performSegue(withIdentifier: "viewToVisit", sender: pin)
+            } catch {
+                showInfo(withTitle: "Error", withMessage: "Error while fetching location: \(error)")
+            }
         }
     }
-}
-
+    
 }

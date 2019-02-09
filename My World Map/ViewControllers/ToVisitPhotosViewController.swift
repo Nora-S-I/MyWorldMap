@@ -14,6 +14,7 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
     
     @IBOutlet weak var pinLocationMapView: MKMapView!
     @IBOutlet weak var photoColloectionView: UICollectionView!
+    @IBOutlet weak var newCollection: UIButton!
     
     var selectedIndexes = [IndexPath]()
     var insertedIndexPaths: [IndexPath]!
@@ -26,9 +27,14 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
     var coreDataStack = CoreDataStack()
     var editState: Bool!
     var selectedIndex: IndexPath!
+    var editButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //add edit button to the navigation bar
+        editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editMode))
+        self.navigationItem.rightBarButtonItem = editButton
         
         //set mapview settings
         pinLocationMapView.delegate = self
@@ -59,9 +65,9 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
         } catch {
             showInfo(withTitle: "Error", withMessage: "Error occure while fetching photos")
         }
-        
+        // pin selected has no saved photos in core data
         if let photos = pin.photos , photos.count == 0 {
-            // pin selected has no saved photos
+            
             fetchPhotosFromFlickr(pin)
         }
     }
@@ -78,9 +84,9 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
         
         self.tabBarController?.tabBar.isHidden = false
     }
-
+    
     @IBAction func newCollectionButton(_ sender: Any) {
-        //delete saved photos
+        //delete photos from core data
         for photos in fetchedResultsController.fetchedObjects! {
             coreDataStack.managedObjectContext.delete(photos)
         }
@@ -94,12 +100,14 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
         let latitude = Double(pin.latitude!)!
         let longitude = Double(pin.longitude!)!
         
+        //fetch data from flickr
         FlickrClient.shared().searchBy(latitude: latitude, longitude: longitude, totalPages: totalPages) { (photosParsed, error) in
             
             if let photosParsed = photosParsed {
                 self.totalPages = photosParsed.photos.pages
                 let totalPhotos = photosParsed.photos.photo.count
                 let photos = photosParsed.photos.photo
+                //save fetched data from flickr to core data
                 for photo in photos {
                     self.performUIUpdatesOnMain {
                         if let url = photo.url {
@@ -124,13 +132,25 @@ class ToVisitPhotosViewController: UIViewController, MKMapViewDelegate {
             let controller = segue.destination as! PhotosViewerViewController
             controller.photoArray = fetchedResultsController.fetchedObjects!
             controller.selectedIndex = selectedIndex.row
-             
+            
         }
     }
     
+    //function to configure view controller interface when user start and done editing
+    @objc func editMode(){
+        editState = !editState
+        if editState{
+            editButton.title = "Done"
+            newCollection.isEnabled = false
+        } else {
+            editButton.title = "Edit"
+            newCollection.isEnabled = true
+        }
+        
+    }
 }
 
-//delegation extension
+//delegations extension
 extension ToVisitPhotosViewController: NSFetchedResultsControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -216,12 +236,14 @@ extension ToVisitPhotosViewController: NSFetchedResultsControllerDelegate, UICol
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        //if user is editing, delete the selected photo
         if editState {
-        //delete the selected photo
-        let photoToDelete = fetchedResultsController.object(at: indexPath)
-        coreDataStack.managedObjectContext.delete(photoToDelete)
-        coreDataStack.saveContext()
-        }else{
+            let photoToDelete = fetchedResultsController.object(at: indexPath)
+            coreDataStack.managedObjectContext.delete(photoToDelete)
+            coreDataStack.saveContext()
+        }
+            //if user is not editing, performe segue
+        else{
             selectedIndex = indexPath
             performSegue(withIdentifier:"showDetails", sender: nil)
         }

@@ -135,7 +135,7 @@ class CoreDataStack: NSObject {
     
     func addPhoto (pin: Pin, image:UIImage) throws
     {
-        if let imageData = image.pngData() {
+        if let imageData = image.jpegData(compressionQuality: 1) {
             let photo = Photo(title: "", imageUrl: "", forPin: pin, context: managedObjectContext)
             photo.image = NSData(data:imageData)
             saveContext()

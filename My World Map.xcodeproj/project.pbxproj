@@ -30,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		422CB48E220ED92D009F02E2 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4270CB5C21FF477800603BCC /* Photo+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataClass.swift"; sourceTree = "<group>"; };
 		4270CB5D21FF477800603BCC /* Photo+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Photo+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		428EDF1E22077B810097A760 /* Pin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Pin+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -68,6 +69,7 @@
 		42C4E09221FC352900D1C675 = {
 			isa = PBXGroup;
 			children = (
+				422CB48E220ED92D009F02E2 /* README.md */,
 				42C4E09D21FC352900D1C675 /* My World Map */,
 				42C4E09C21FC352900D1C675 /* Products */,
 			);

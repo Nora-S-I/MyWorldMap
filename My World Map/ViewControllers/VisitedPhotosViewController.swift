@@ -11,9 +11,10 @@ import MapKit
 import  CoreData
 
 class VisitedPhotosViewController: UIViewController {
-
+    
     @IBOutlet weak var visitedCollectionView: UICollectionView!
     @IBOutlet weak var visitedLocationMap: MKMapView!
+    @IBOutlet weak var addPhoto: UIButton!
     
     var pin: Pin?
     var coreDataStack = CoreDataStack()
@@ -26,9 +27,14 @@ class VisitedPhotosViewController: UIViewController {
     var presentingAlert = false
     var selectedIndex: IndexPath!
     var editState: Bool!
+    var editButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //add edit button to the navigation bar
+        editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editMode))
+        self.navigationItem.rightBarButtonItem = editButton
         
         //set mapview settings
         visitedLocationMap.delegate = self
@@ -48,7 +54,7 @@ class VisitedPhotosViewController: UIViewController {
         visitedLocationMap.addAnnotation(annotation)
         visitedLocationMap.setCenter(locationCoordinate, animated: true)
         
-        //fetch saved photos for the selected location
+        //fetch photos saved on core data for the selected location
         let fetchRequest = NSFetchRequest<Photo>(entityName: Photo.name)
         fetchRequest.sortDescriptors = []
         fetchRequest.predicate = NSPredicate(format: "pin == %@", argumentArray: [pin])
@@ -59,7 +65,8 @@ class VisitedPhotosViewController: UIViewController {
         } catch {
             showInfo(withTitle: "Error", withMessage: "Error occure while fetching photos")
         }
-       
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,9 +81,9 @@ class VisitedPhotosViewController: UIViewController {
         
         self.tabBarController?.tabBar.isHidden = false
     }
-
+    
     @IBAction func addPhoto(_ sender: Any) {
-        
+        //display photo library to user
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.sourceType = .photoLibrary
@@ -89,10 +96,22 @@ class VisitedPhotosViewController: UIViewController {
             let controller = segue.destination as! PhotosViewerViewController
             controller.photoArray = fetchedResultsController.fetchedObjects!
             controller.selectedIndex = selectedIndex.row
-          
+            
         }
     }
     
+    //function to configure view controller interface when user start and done editing
+    @objc func editMode(){
+        editState = !editState
+        if editState{
+            editButton.title = "Done"
+            addPhoto.isEnabled = false
+        } else {
+            editButton.title = "Edit"
+            addPhoto.isEnabled = true
+        }
+        
+    }
 }
 
 extension VisitedPhotosViewController: MKMapViewDelegate
@@ -148,13 +167,15 @@ extension VisitedPhotosViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-       
+        
+        //if user is editing, delete the selected photo
         if editState {
-        //delete the selected photo
-        let photoToDelete = fetchedResultsController.object(at: indexPath)
-        coreDataStack.managedObjectContext.delete(photoToDelete)
-        coreDataStack.saveContext()
-        } else {
+            let photoToDelete = fetchedResultsController.object(at: indexPath)
+            coreDataStack.managedObjectContext.delete(photoToDelete)
+            coreDataStack.saveContext()
+        }
+        //if user is not editing, performe segue
+        else {
             selectedIndex = indexPath
             performSegue(withIdentifier:"showDetails", sender: nil)
         }
@@ -223,10 +244,10 @@ extension VisitedPhotosViewController: UIImagePickerControllerDelegate, UINaviga
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        
+        //save selected image to core data
         if let image =  info[UIImagePickerController.InfoKey.originalImage] as? UIImage  {
             do {
-           try coreDataStack.addPhoto(pin: pin!, image: image)
+                try coreDataStack.addPhoto(pin: pin!, image: image)
             } catch{
                 showInfo(withMessage: "Picture can't be saved")
             }
@@ -234,7 +255,7 @@ extension VisitedPhotosViewController: UIImagePickerControllerDelegate, UINaviga
             showInfo(withMessage: "Picture can't be selected")
         }
         dismiss(animated: true, completion: nil)
-         visitedCollectionView.reloadData()
+        visitedCollectionView.reloadData()
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -242,6 +263,6 @@ extension VisitedPhotosViewController: UIImagePickerControllerDelegate, UINaviga
         //close the image picker controller
         dismiss(animated: true, completion: nil)
     }
-
+    
     
 }

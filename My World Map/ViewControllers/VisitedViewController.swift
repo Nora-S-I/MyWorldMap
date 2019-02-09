@@ -9,8 +9,8 @@
 import UIKit
 import MapKit
 
-class VisitedViewController: UIViewController, MKMapViewDelegate {
-
+class VisitedViewController: UIViewController {
+    
     @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var mapView: MKMapView!
     
@@ -20,11 +20,11 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         mapView.delegate = self
         editingState = false
         
-        //display previous pins
+        //display previously saved pins on core data
         var previousPins: [Pin]?
         do {
             try  previousPins = coreDataStack.fetchAllPins(isVisited: true, entityName: Pin.name)
@@ -47,19 +47,22 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
     @IBAction func edit(_ sender: Any) {
         //change editing state
         editingState = !editingState
-        
+        //when start editing, change to edit mode
         if editingState {
             configureEditButton(editState: editingState, buttonTitle: "Done")
-        }else {
+        }
+            //when finish editing, get back orginal mode
+        else {
             configureEditButton(editState: editingState, buttonTitle: "Edit")
         }
     }
     
     @IBAction func addPinLongPressGesture(_ sender: UILongPressGestureRecognizer) {
+        //allow user to add pin only if the user not on edit mode
         if !editingState{
             let location = sender.location(in: mapView)
             let locationCoordinate = mapView.convert(location, toCoordinateFrom: mapView)
-           
+            
             switch sender.state {
             case .began:
                 pinAnnotation = MKPointAnnotation()
@@ -91,7 +94,7 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
             controller.coreDataStack = coreDataStack
         }
     }
-    
+    //function to configure the view controller interface when the user start and done editing
     func configureEditButton (editState: Bool, buttonTitle: String){
         let tabBarControllerItems = self.tabBarController?.tabBar.items
         editButton.title = buttonTitle
@@ -101,7 +104,7 @@ class VisitedViewController: UIViewController, MKMapViewDelegate {
 }
 
 // Map View delegattion
-extension VisitedViewController {
+extension VisitedViewController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -132,7 +135,7 @@ extension VisitedViewController {
         guard let annotation = view.annotation else {
             return
         }
-        //delete pin
+        //if user on edit mode, delete pin
         if editingState {
             
             do{
@@ -142,7 +145,7 @@ extension VisitedViewController {
                 showInfo(withTitle: "Error", withMessage: "Couldn't delete the pin")
             }
         }
-            //performe segue
+            //if user is not editing, performe segue
         else {
             mapView.deselectAnnotation(annotation, animated: true)
             let latitude = String(annotation.coordinate.latitude)

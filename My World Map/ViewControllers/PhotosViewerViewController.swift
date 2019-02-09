@@ -19,6 +19,7 @@ class PhotosViewerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //add left and write swipe gestures
         let leftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleLeftSwipe(_:)))
         let rightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(handleRightSwipe(_:)))
         
@@ -28,6 +29,7 @@ class PhotosViewerViewController: UIViewController {
         view.addGestureRecognizer(leftSwipe)
         view.addGestureRecognizer(rightSwipe)
         
+        //display selected photo
         imageView.image = UIImage(data: photoArray[selectedIndex].image! as Data)
     }
     
@@ -45,6 +47,8 @@ class PhotosViewerViewController: UIViewController {
     }
     
     @objc func handleRightSwipe(_ sender:UISwipeGestureRecognizer) {
+      
+        //if previous index not out of range, swipe photo
         if selectedIndex - 1 >= 0 {
             selectedIndex -= 1
             imageView.image = UIImage(data: photoArray[selectedIndex].image! as Data)
@@ -53,6 +57,7 @@ class PhotosViewerViewController: UIViewController {
     
     @objc func handleLeftSwipe(_ sender:UISwipeGestureRecognizer) {
         
+        //if next index not out of range, swipe photo
         if selectedIndex + 1 < photoArray.count {
             selectedIndex += 1
             imageView.image = UIImage(data: photoArray[selectedIndex].image! as Data)
